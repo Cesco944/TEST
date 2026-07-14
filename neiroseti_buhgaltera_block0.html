@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#184f92">
+<title>Нейросети для бухгалтера — Блок 0</title>
+<style>
+:root{
+  --blue:#184f92;
+  --blue2:#3574bd;
+  --blue3:#0d315d;
+  --green:#18a900;
+  --green2:#4cc73a;
+  --orange:#f58a2d;
+  --red:#d94343;
+  --ink:#102238;
+  --muted:#647386;
+  --paper:#ffffff;
+  --soft:#f2f6fb;
+  --line:#dbe6f2;
+  --shadow:0 24px 70px rgba(16,43,78,.17);
+  --radius:26px;
+}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#dfe8f2;color:var(--ink);font-family:Arial,"Segoe UI",sans-serif}
+button,input{font:inherit}
+.deck{position:relative;width:100vw;height:100vh;background:#fff;overflow:hidden}
+.slide{position:absolute;inset:0;padding:3.6vh 4.4vw 3vh;display:grid;grid-template-rows:auto 1fr auto;background:linear-gradient(135deg,#fff 0%,#fbfdff 57%,#edf4fb 100%);opacity:0;transform:translateX(5vw) scale(.985);pointer-events:none;transition:opacity .48s ease,transform .48s cubic-bezier(.2,.8,.2,1);overflow:hidden}
+.slide.active{opacity:1;transform:none;pointer-events:auto}
+.slide::before{content:"";position:absolute;left:-8vw;top:-10vh;width:39vw;height:31vh;background:linear-gradient(145deg,var(--blue2),#4c85cb);clip-path:polygon(0 0,100% 0,73% 100%,18% 77%);filter:drop-shadow(0 12px 14px rgba(19,58,105,.25));z-index:0}
+.slide::after{content:"";position:absolute;right:-5vw;bottom:-8vh;width:31vw;height:24vh;background:linear-gradient(145deg,#4b84ca,var(--blue2));clip-path:polygon(28% 0,100% 20%,100% 100%,0 100%);filter:drop-shadow(0 -10px 14px rgba(19,58,105,.23));z-index:0}
+.bg-lines{position:absolute;inset:0;z-index:0;opacity:.38;pointer-events:none;background-image:linear-gradient(24deg,transparent 0 42%,rgba(24,79,146,.15) 42.08% 42.2%,transparent 42.3%),linear-gradient(151deg,transparent 0 55%,rgba(24,79,146,.13) 55.08% 55.2%,transparent 55.3%),linear-gradient(103deg,transparent 0 69%,rgba(24,79,146,.12) 69.08% 69.2%,transparent 69.3%)}
+.green-bars{position:absolute;right:-2vw;top:5.6vh;width:42vw;display:grid;gap:2.2vh;z-index:1;justify-items:end}
+.green-bars i{display:block;height:1.35vh;min-height:8px;border-radius:999px;background:var(--green);box-shadow:0 5px 12px rgba(24,169,0,.18)}
+.green-bars i:nth-child(1){width:100%}.green-bars i:nth-child(2){width:82%}.green-bars i:nth-child(3){width:62%}
+.top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:2vw;min-height:9vh}
+.brand{display:flex;align-items:center;gap:1vw;color:#546170;font-weight:800;text-transform:uppercase;letter-spacing:.025em;font-size:clamp(10px,1vw,17px);line-height:1.18;max-width:48vw}
+.logo{width:clamp(48px,4.4vw,78px);aspect-ratio:1;position:relative;flex:0 0 auto}
+.logo svg{width:100%;height:100%;display:block;filter:drop-shadow(0 8px 11px rgba(0,0,0,.12))}
+.course-chip{padding:.8em 1.2em;border-radius:999px;background:rgba(255,255,255,.78);border:1px solid rgba(24,79,146,.15);color:var(--blue);font-size:clamp(11px,.95vw,16px);font-weight:900;backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(17,51,91,.08)}
+.main{position:relative;z-index:2;align-self:center;min-height:0}
+.kicker{color:var(--green);font-size:clamp(13px,1.15vw,20px);font-weight:950;text-transform:uppercase;letter-spacing:.12em;margin-bottom:1.5vh}
+h1,h2,h3,p{margin:0}
+h1{font-size:clamp(52px,6.6vw,116px);line-height:.91;letter-spacing:-.055em;font-weight:950;color:#07182b}
+h2{font-size:clamp(36px,4vw,72px);line-height:1.01;letter-spacing:-.04em;font-weight:950;color:#081a2e;max-width:82vw;margin-top:1vh}
+h3{font-size:clamp(22px,2.1vw,38px);line-height:1.08}
+.lead{font-size:clamp(19px,2vw,34px);line-height:1.28;color:#38485a;margin-top:2.4vh;max-width:57vw}
+.footer{position:relative;z-index:3;display:flex;align-items:center;gap:1.3vw;color:#6f7f91;font-size:clamp(10px,.9vw,15px);font-weight:900;min-height:4vh}
+.footer .line{height:5px;flex:1;border-radius:999px;background:var(--green)}
+.hero{display:grid;grid-template-columns:1.05fr .82fr;gap:4.5vw;align-items:center}
+.hero-copy{padding-top:2vh}
+.hero-photo-card{justify-self:end;width:min(34vw,610px);height:min(66vh,690px);border-radius:34px;background:#fff;box-shadow:var(--shadow);border:1px solid rgba(24,79,146,.12);padding:14px;position:relative;overflow:hidden}
+.hero-photo-card::before{content:"";position:absolute;inset:14px;border-radius:25px;background:linear-gradient(150deg,#f5f9fd,#dce9f6);z-index:0}
+.hero-photo{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;object-position:center bottom;border-radius:25px;display:block}
+.photo-fallback{position:absolute;inset:14px;z-index:0;border-radius:25px;display:grid;place-items:center;color:var(--blue);font-weight:900;text-align:center;padding:2rem;background:linear-gradient(135deg,#edf4fb,#d7e6f5)}
+.photo-fallback span{display:block;font-size:clamp(16px,1.4vw,24px);max-width:20ch}
+.speaker{display:inline-flex;align-items:center;gap:.7em;margin-top:2.3vh;padding:.8em 1.15em;border-radius:999px;background:var(--blue);color:#fff;font-weight:900;font-size:clamp(14px,1.25vw,21px);box-shadow:0 15px 35px rgba(24,79,146,.22)}
+.promise-row{display:flex;gap:.8vw;flex-wrap:wrap;margin-top:2vh}
+.promise{padding:.72em 1em;border-radius:999px;background:#fff;border:2px solid rgba(24,79,146,.12);font-size:clamp(13px,1.15vw,19px);font-weight:900;box-shadow:0 8px 24px rgba(24,79,146,.08)}
+.cards5{display:grid;grid-template-columns:repeat(5,1fr);gap:1.25vw;margin-top:4vh}
+.task{background:#fff;border-radius:24px;padding:2.1vh 1.25vw;min-height:29vh;box-shadow:var(--shadow);border-top:8px solid var(--blue);display:flex;flex-direction:column;justify-content:space-between;transition:transform .25s ease}
+.task:nth-child(even){border-top-color:var(--green)}
+.task:hover{transform:translateY(-6px)}
+.task .icon{font-size:clamp(28px,3vw,54px)}
+.task strong{font-size:clamp(19px,1.7vw,31px);line-height:1.08}
+.task p{font-size:clamp(14px,1.2vw,20px);line-height:1.3;color:var(--muted)}
+.callout{margin-top:3vh;border-left:8px solid var(--green);background:#eaf4ff;border-radius:18px;padding:1.8vh 1.5vw;font-size:clamp(18px,1.65vw,29px);font-weight:900;color:var(--blue)}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:2.2vw;margin-top:3.2vh;position:relative}
+.panel{background:#fff;border-radius:28px;padding:3vh 2vw;box-shadow:var(--shadow);min-height:45vh}
+.panel.no{background:#fff8f2}
+.panel h3{margin-bottom:2.4vh;color:var(--blue)}
+.panel.no h3{color:#9d4d13}
+.panel ul{margin:0;padding:0;list-style:none;display:grid;gap:1.75vh}
+.panel li{font-size:clamp(17px,1.55vw,27px);font-weight:850;line-height:1.25;display:flex;gap:.7em;align-items:flex-start}
+.panel li::before{content:"✓";color:var(--green);font-weight:950}
+.panel.no li::before{content:"×";color:var(--orange);font-size:1.1em}
+.control{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:1em 1.4em;border-radius:999px;background:var(--blue3);color:#fff;font-size:clamp(13px,1.1vw,19px);font-weight:950;box-shadow:0 16px 34px rgba(13,49,93,.32);white-space:nowrap}
+.security{display:grid;grid-template-columns:.85fr 1.15fr;gap:3.2vw;align-items:center;margin-top:2.3vh}
+.shield{height:min(47vh,500px);border-radius:36px;background:linear-gradient(145deg,var(--blue3),var(--blue2));box-shadow:var(--shadow);display:grid;place-items:center;color:#fff;position:relative;overflow:hidden}
+.shield::before{content:"";position:absolute;width:44%;aspect-ratio:.8;background:#fff;clip-path:polygon(50% 0,92% 17%,84% 70%,50% 100%,16% 70%,8% 17%);opacity:.95}
+.shield::after{content:"✓";position:absolute;color:var(--green);font-size:clamp(70px,9vw,160px);font-weight:950;top:38%;left:50%;transform:translate(-50%,-50%)}
+.shield b{position:absolute;bottom:3vh;left:2vw;right:2vw;text-align:center;font-size:clamp(18px,1.7vw,30px);line-height:1.15}
+.banlist{display:grid;gap:1.25vh}
+.ban{background:#fff;border-radius:18px;padding:1.5vh 1.25vw;font-size:clamp(16px,1.35vw,23px);font-weight:900;box-shadow:0 10px 26px rgba(24,79,146,.09);border-left:7px solid var(--red)}
+.safe-formula{margin-top:1.6vh;background:var(--blue);color:#fff;border-radius:18px;padding:1.5vh 1.3vw;font-size:clamp(16px,1.35vw,23px);font-weight:950;text-align:center}
+.chain{display:grid;grid-template-columns:repeat(7,1fr);gap:.8vw;margin-top:3.4vh}
+.chain-step{min-height:15vh;background:#fff;border-radius:20px;padding:1.6vh .7vw;box-shadow:0 12px 28px rgba(24,79,146,.09);display:grid;place-items:center;text-align:center;font-size:clamp(14px,1.15vw,20px);font-weight:950;border-bottom:7px solid var(--blue)}
+.chain-step:nth-child(5),.chain-step:nth-child(7){border-bottom-color:var(--orange);background:#fff9f4}
+.chain-step span{display:block;font-size:clamp(23px,2.4vw,42px);margin-bottom:.7vh}
+.two-examples{display:grid;grid-template-columns:1fr 1fr;gap:2vw;margin-top:3vh}
+.example{background:#fff;border-radius:24px;padding:2.4vh 1.7vw;box-shadow:var(--shadow);border-left:9px solid var(--red)}
+.example.good{border-left-color:var(--green)}
+.example small{display:block;text-transform:uppercase;letter-spacing:.12em;font-weight:950;color:var(--muted);margin-bottom:1.2vh}
+.example p{font-size:clamp(19px,1.75vw,31px);font-weight:900;line-height:1.2}
+.demo{display:grid;grid-template-columns:.8fr 1.2fr;gap:2.4vw;align-items:stretch;margin-top:2.4vh}
+.case{background:linear-gradient(145deg,var(--blue3),var(--blue));color:#fff;border-radius:28px;padding:3vh 2vw;box-shadow:var(--shadow)}
+.case h3{margin-bottom:2vh}.case .money{font-size:clamp(44px,5vw,88px);font-weight:950;color:#fff;letter-spacing:-.05em}.case p{font-size:clamp(16px,1.35vw,23px);line-height:1.35;margin-top:1.5vh;color:#e4eef9}
+.doc{background:#fff;border-radius:28px;padding:3vh 2vw;box-shadow:var(--shadow);min-height:43vh;position:relative}
+.doc::before{content:"Черновик письма";display:block;font-size:clamp(15px,1.25vw,21px);font-weight:950;color:var(--blue);margin-bottom:2vh;text-transform:uppercase;letter-spacing:.08em}
+.subject{height:4.4vh;border-radius:10px;background:#edf3f9;width:76%;margin-bottom:2vh}
+.docline{height:1.6vh;min-height:10px;border-radius:999px;background:#dce8f3;margin:1.45vh 0}.docline.s{width:64%}.docline.accent{background:#bfe2b8;width:83%}
+.checks{display:flex;gap:.65vw;flex-wrap:wrap;margin-top:2.3vh}.check{padding:.68em .9em;border-radius:999px;background:#ebf8e8;color:#176d0e;font-weight:950;font-size:clamp(12px,1vw,17px)}
+.problems{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2vw;margin-top:2.4vh}.problem{background:#fff7ef;border-radius:18px;padding:1.5vh 1.1vw;border-left:7px solid var(--orange);font-size:clamp(15px,1.25vw,22px);font-weight:900}
+.table{background:#fff;border-radius:25px;padding:2vh 1.25vw;box-shadow:var(--shadow);margin-top:2vh}.table-grid{display:grid;grid-template-columns:1fr .72fr 1.3fr 1.15fr;border:1px solid var(--line);border-radius:16px;overflow:hidden}.cell{padding:1.35vh 1vw;font-size:clamp(13px,1.05vw,18px);border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff;line-height:1.25}.head{background:var(--blue);color:#fff;font-weight:950}.status{color:#a35217;font-weight:950}
+.analytics{display:grid;grid-template-columns:1fr 1fr;gap:2.5vw;align-items:center;margin-top:2.3vh}.chart{height:min(45vh,480px);background:#fff;border-radius:28px;padding:3vh 2vw;box-shadow:var(--shadow);display:flex;justify-content:center;align-items:flex-end;gap:3vw}.bar-group{text-align:center;color:var(--muted);font-weight:900;font-size:clamp(12px,1vw,17px)}.bar{width:clamp(56px,5vw,92px);border-radius:15px 15px 4px 4px;background:linear-gradient(180deg,#4b89d1,var(--blue));margin:0 auto 1.2vh;position:relative}.bar.neg{background:linear-gradient(180deg,#f3a05c,var(--orange))}.bar.neg::before{content:"−1,33 млн";position:absolute;top:-3.2vh;left:50%;transform:translateX(-50%);color:#b65612;font-weight:950;white-space:nowrap;font-size:clamp(12px,1.05vw,18px)}
+.note{background:#fff;border-radius:28px;padding:3vh 2vw;box-shadow:var(--shadow)}.note p{font-size:clamp(17px,1.45vw,25px);line-height:1.4;color:#3f4e60;margin-top:2vh}.tags{display:flex;flex-wrap:wrap;gap:.7vw;margin-top:2vh}.tag{padding:.7em .95em;border-radius:999px;background:#edf4fb;color:var(--blue);font-weight:950;font-size:clamp(12px,1vw,17px)}.tag.fact{background:#e7f7e4;color:#176d0e}.tag.warn{background:#fff0e4;color:#a65216}
+.flags{display:grid;grid-template-columns:1fr 1fr;gap:2.2vw;margin-top:2.4vh}.answer{background:#fff;border-radius:28px;padding:3vh 2vw;box-shadow:var(--shadow);min-height:39vh;display:flex;align-items:center}.answer p{font-size:clamp(20px,1.8vw,31px);font-weight:850;line-height:1.45}.mark{background:#ffe1cc;border:2px solid #ffba85;border-radius:8px;padding:.05em .2em}.flaglist{display:grid;gap:1.15vh}.flag{background:#fff;border-radius:18px;padding:1.45vh 1.15vw;border-left:7px solid var(--red);box-shadow:0 10px 26px rgba(24,79,146,.08);font-size:clamp(15px,1.3vw,22px);font-weight:900}.question{grid-column:1/-1;background:var(--blue3);color:#fff;border-radius:22px;padding:1.8vh 1.5vw;text-align:center;font-size:clamp(19px,1.7vw,29px);font-weight:950}
+.roadmap{display:grid;grid-template-columns:1.1fr .9fr;gap:2.8vw;margin-top:2.2vh}.stages{display:grid;gap:1.2vh}.stage{background:#fff;border-radius:18px;padding:1.55vh 1.25vw;box-shadow:0 10px 26px rgba(24,79,146,.09);border-left:8px solid var(--blue);font-size:clamp(17px,1.45vw,25px);font-weight:950;display:flex;align-items:center;justify-content:space-between}.stage:nth-child(even){border-left-color:var(--green)}
+.cta{background:linear-gradient(145deg,var(--blue3),var(--blue));color:#fff;border-radius:30px;padding:3vh 2vw;box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:space-between;min-height:45vh}.cta h3{font-size:clamp(27px,2.7vw,48px);line-height:1.08}.cta p{font-size:clamp(16px,1.35vw,23px);line-height:1.4;color:#dfebf8;margin-top:2vh}.cta-button{display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;padding:.9em 1.25em;border-radius:999px;background:var(--green);color:#fff;font-size:clamp(17px,1.45vw,25px);font-weight:950;box-shadow:0 14px 32px rgba(24,169,0,.25)}
+.nav{position:fixed;right:2vw;bottom:2vh;z-index:30;display:flex;align-items:center;gap:.55vw;padding:.55vw;border-radius:999px;background:rgba(255,255,255,.82);backdrop-filter:blur(14px);border:1px solid rgba(24,79,146,.14);box-shadow:0 12px 32px rgba(13,49,93,.16)}
+.nav button{width:clamp(39px,3vw,54px);height:clamp(39px,3vw,54px);border:0;border-radius:50%;cursor:pointer;color:#fff;background:var(--blue);font-size:clamp(18px,1.6vw,27px);font-weight:950;transition:transform .2s ease,background .2s ease}.nav button:hover{transform:translateY(-2px);background:var(--blue3)}.nav .counter{min-width:5.5em;text-align:center;color:var(--blue);font-weight:950;font-size:clamp(12px,1vw,17px)}
+.progress{position:fixed;left:0;bottom:0;height:7px;background:var(--green);z-index:40;width:10%;transition:width .35s ease}
+.help{position:fixed;left:2vw;bottom:2vh;z-index:30;padding:.8em 1.1em;border-radius:999px;background:rgba(255,255,255,.78);border:1px solid rgba(24,79,146,.12);color:#66768a;font-size:clamp(10px,.85vw,14px);font-weight:850;backdrop-filter:blur(12px)}
+.fullscreen{background:var(--green)!important}
+.photo-tool{position:fixed;left:50%;bottom:2vh;transform:translateX(-50%);z-index:31}.photo-tool label{display:inline-flex;align-items:center;gap:.5em;padding:.75em 1em;border-radius:999px;background:rgba(255,255,255,.86);border:1px solid rgba(24,79,146,.14);box-shadow:0 10px 28px rgba(13,49,93,.13);color:var(--blue);font-weight:900;cursor:pointer;font-size:clamp(10px,.85vw,14px)}.photo-tool input{display:none}
+.overview{position:fixed;inset:0;z-index:50;background:rgba(8,24,43,.88);backdrop-filter:blur(16px);display:none;padding:4vh 4vw;overflow:auto}.overview.open{display:block}.overview-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2vw}.thumb{background:#fff;border-radius:18px;padding:1.2vw;min-height:18vh;cursor:pointer;box-shadow:0 14px 36px rgba(0,0,0,.22);transition:transform .2s ease}.thumb:hover{transform:translateY(-5px)}.thumb b{display:block;color:var(--blue);margin-bottom:.7vh}.thumb span{font-size:clamp(12px,1vw,17px);font-weight:900;line-height:1.25}.overview-close{position:sticky;top:0;float:right;border:0;border-radius:999px;background:#fff;color:var(--blue);padding:.8em 1.1em;font-weight:950;cursor:pointer;margin-bottom:2vh}
+@media(max-width:980px){.slide{padding:2.7vh 3vw}.green-bars{display:none}.brand{max-width:75vw}.course-chip{display:none}.hero{grid-template-columns:1fr .75fr;gap:2vw}.hero-photo-card{width:38vw;height:56vh}.cards5{grid-template-columns:repeat(3,1fr)}.task{min-height:20vh}.chain{grid-template-columns:repeat(4,1fr)}.overview-grid{grid-template-columns:repeat(2,1fr)}.help{display:none}}
+@media(max-width:720px){.brand div:last-child{display:none}.hero{grid-template-columns:1fr}.hero-photo-card{display:none}.lead{max-width:90vw}.cards5{grid-template-columns:1fr 1fr}.compare,.security,.demo,.analytics,.flags,.roadmap{grid-template-columns:1fr}.panel{min-height:auto}.control{display:none}.shield{display:none}.chain{grid-template-columns:repeat(2,1fr)}.table-grid{grid-template-columns:1fr 1fr}.head:nth-child(3),.head:nth-child(4),.cell:nth-child(4n+3),.cell:nth-child(4n+4){display:none}.photo-tool{display:none}.slide{overflow-y:auto}.nav{right:3vw}.footer{padding-bottom:7vh}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<section class="slide active" data-title="Титульный слайд">
+  <div class="bg-lines"></div><div class="green-bars"><i></i><i></i><i></i></div>
+  <header class="top">
+    <div class="brand"><div class="logo"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="49" cy="47" r="34" fill="#fff" stroke="#18a900" stroke-width="5"/><path d="M18 46h62M23 32h52M24 60h49M49 13c-17 13-18 56 0 69M49 13c17 13 18 56 0 69" fill="none" stroke="#18a900" stroke-width="3"/><path d="M17 45c7 8 15 17 30 25 13-8 24-17 31-29-16-7-37-8-61 4z" fill="#3574bd" opacity=".95"/><circle cx="70" cy="69" r="13" fill="none" stroke="#184f92" stroke-width="6"/><path d="M79 78l13 13" stroke="#184f92" stroke-width="7" stroke-linecap="round"/></svg></div><div>АНО ДПО «Международный институт повышения<br>квалификации и переподготовки»</div></div>
+    <div class="course-chip">Веб-презентация • 10 слайдов</div>
+  </header>
+  <main class="main hero">
+    <div class="hero-copy">
+      <div class="kicker">Блок 0. Продающий вебинар</div>
+      <h1>Нейросети<br>для бухгалтера</h1>
+      <p class="lead">Меньше рутины. Больше контроля. Понятные рабочие сценарии без программирования.</p>
+      <div class="promise-row"><span class="promise">Без сложных терминов</span><span class="promise">На учебных данных</span><span class="promise">С проверкой результата</span></div>
+      <div class="speaker">Спикер: Сергеев Олег Владимирович</div>
+    </div>
+    <div class="hero-photo-card"><div class="photo-fallback"><span>Поместите файл «изображение(212).png» рядом с презентацией или выберите фото снизу</span></div><img class="hero-photo speaker-photo" src="./изображение(212).png" alt="Сергеев Олег Владимирович"></div>
+  </main>
+  <footer class="footer"><span>01 / 10</span><div class="line"></div><span>Нейросети для бухгалтера</span></footer>
+</section>
+
+<section class="slide" data-title="Где бухгалтер теряет время">
+  <div class="bg-lines"></div><div class="green-bars"><i></i><i></i><i></i></div>
+  <header class="top"><div class="brand"><div class="logo"><svg viewBox="0 0 100 100"><circle cx="49" cy="47" r="34" fill="#fff" stroke="#18a900" stroke-width="5"/><path d="M18 46h62M23 32h52M24 60h49M49 13c-17 13-18 56 0 69M49 13c17 13 18 56 0 69" fill="none" stroke="#18a900" stroke-width="3"/><path d="M17 45c7 8 15 17 30 25 13-8 24-17 31-29-16-7-37-8-61 4z" fill="#3574bd"/><circle cx="70" cy="69" r="13" fill="none" stroke="#184f92" stroke-width="6"/><path d="M79 78l13 13" stroke="#184f92" stroke-width="7" stroke-linecap="round"/></svg></div><div>Нейросети для бухгалтера</div></div></header>
+  <main class="main"><div class="kicker">Слайд 2</div><h2>Где бухгалтер теряет время каждый день</h2><div class="cards5"><article class="task"><div class="icon">✉️</div><strong>Письма</strong><p>Контрагентам, коллегам и руководителю</p></article><article class="task"><div class="icon">🧾</div><strong>Пояснения</strong><p>По расхождениям, оплатам и документам</p></article><article class="task"><div class="icon">📄</div><strong>Документы</strong><p>Комплектность, реквизиты и спорные места</p></article><article class="task"><div class="icon">📊</div><strong>Таблицы</strong><p>Сверки, выписки и списки операций</p></article><article class="task"><div class="icon">📌</div><strong>Записки</strong><p>Краткие выводы для руководителя</p></article></div><div class="callout">Рутина состоит из десятков небольших задач, которые повторяются каждую неделю.</div></main>
+  <footer class="footer"><span>02 / 10</span><div class="line"></div><span>Где появляется экономия времени</span></footer>
+</section>
+
+<section class="slide" data-title="Нейросеть — помощник">
+  <div class="bg-lines"></div><div class="green-bars"><i></i><i></i><i></i></div>
+  <header class="top"><div class="brand"><div class="logo"><svg viewBox="0 0 100 100"><circle cx="49" cy="47" r="34" fill="#fff" stroke="#18a900" stroke-width="5"/><path d="M18 46h62M23 32h52M24 60h49M49 13c-17 13-18 56 0 69M49 13c17 13 18 56 0 69" fill="none" stroke="#18a900" stroke-width="3"/><path d="M17 45c7 8 15 17 30 25 13-8 24-17 31-29-16-7-37-8-61 4z" fill="#3574bd"/><circle cx="70" cy="69" r="13" fill="none" stroke="#184f92" stroke-width="6"/><path d="M79 78l13 13" stroke="#184f92" stroke-width="7" stroke-linecap="round"/></svg></div><div>Нейросети для бухгалтера</div></div></header>
+  <main class="main"><div class="kicker">Слайд 3</div><h2>Нейросеть — помощник, а не автономный бухгалтер</h2><div class="compare"><section class="panel"><h3>Нейросеть может</h3><ul><li>подготовить черновик письма</li><li>структурировать список документов</li><li>сгруппировать данные по правилам</li><li>сформулировать вопросы для проверки</li></ul></section><section class="panel no"><h3>Нейросеть не может</h3><ul><li>гарантировать точность цифр</li><li>подписывать официальный документ</li><li>принимать бухгалтерское решение</li><li>заменять учётную политику</li></ul></section><div class="control">Решение остаётся за бухгалтером</div></div></main>
+  <footer class="footer"><span>03 / 10</span><div class="line"></div><span>Скорость инструмента + профессиональный контроль</span></footer>
+</section>
+
+<section class="slide" data-title="Безопасность">
+  <div class="bg-lines"></div><div class="green-bars"><i></i><i></i><i></i></div>
+  <header class="top"><div class="brand"><div class="logo"><svg viewBox="0 0 100 100"><circle cx="49" cy="47" r="34" fill="#fff" stroke="#18a900" stroke-width="5"/><path d="M18 46h62M23 32h52M24 60h49M49 13c-17 13-18 56 0 69M49 13c17 13 18 56 0 69" fill="none" stroke="#18a900" stroke-width="3"/><path d="M17 45c7 8 15 17 30 25 13-8 24-17 31-29-16-7-37-8-61 4z" fill="#3574bd"/><circle cx="70" cy="69" r="13" fill="none" stroke="#184f92" stroke-width="6"/><path d="M79 78l13 13" stroke="#184f92" stroke-width="7" stroke-linecap="round"/></svg></div><div>Нейросети для бухгалтера</div></div></header>
+  <main class="main"><div class="kicker">Слайд 4</div><h2>Что нельзя загружать в публичную нейросеть</h2><div class="security"><div class="shield"><b>Безопасная работа начинается до отправки запроса</b></div><div><div class="banlist"><div class="ban">Персональные данные сотрудников, клиентов и контрагентов</div><div class="ban">Пароли, коды подтверждения и электронные подписи</div><div class="ban">Полные банковские реквизиты физических лиц</div><div class="ban">Коммерческая тайна и закрытая отчётность</div><div class="ban">Документы, запрещённые внутренними правилами компании</div></div><div class="safe-formula">Подготовить → обезличить → запросить → проверить</div></div></div></main>
+  <footer class="footer"><span>04 / 10</span><div class="line"></div><span>Только вымышленные или разрешённые данные</span></footer>
+</section>
+
+<section class="slide" data-title="Структура запроса">
+  <div class="bg-lines"></div><div class="green-bars"><i></i><i></i><i></i></div>
+  <header class="top"><div class="brand"><div class="logo"><svg viewBox="0 0 100 100"><circle cx="49" cy="47" r="34" fill="#fff" stroke="#18a900" stroke-width="5"/><path d="M18 46h62M23 32h52M24 60h49M49 13c-17 13-18 56 0 69M49 13c17 13 18 56 0 69" fill="none" stroke="#18a900" stroke-width="3"/><path d="M17 45c7 8 15 17 30 25 13-8 24-17 31-29-16-7-37-8-61 4z" fill="#3574bd"/><circle cx="70" cy="69" r="13" fill="none" stroke="#184f92" stroke-width="6"/><path d="M79 78l13 13" stroke="#184f92" stroke-width="7" stroke-linecap="round"/></svg></div><div>Нейросети для бухгалтера</div></div></header>
+  <main class="main"><div class="kicker">Слайд 5</div><h2>Почему один запрос работает, а другой даёт общий текст</h2><div class="chain"><div class="chain-step"><div><span>👤</span>Роль</div></div><div class="chain-step"><div><span>💬</span>Контекст</div></div><div class="chain-step"><div><span>🎯</span>Задача</div></div><div class="chain-step"><div><span>📊</span>Данные</div></div><div class="chain-step"><div><span>⛔</span>Ограничения</div></div><div class="chain-step"><div><span>📄</span>Формат</div></div><div class="chain-step"><div><span>✅</span>Проверка</div></div></div><div class="two-examples"><div class="example"><small>Слабый запрос</small><p>«Напиши письмо должнику»</p></div><div class="example good"><small>Рабочий запрос</small><p>Конкретные факты + ограничения + формат + точки проверки</p></div></div></main>
+  <footer class="footer"><span>05 / 10</span><div class="line"></div><span>Роль → контекст → задача → данные → контроль</span></footer>
+</section>
+
+<section class="slide" data-title="Практика 1. Письмо">
+  <div class="bg-lines"></div><div class="green-bars"><i></i><i></i><i></i></div>
+  <header class="top"><div class="brand"><div class="logo"><svg viewBox="0 0 100 100"><circle cx="49" cy="47" r="34" fill="#fff" stroke="#18a900" stroke-width="5"/><path d="M18 46h62M23 32h52M24 60h49M49 13c-17 13-18 56 0 69M49 13c17 13 18 56 0 69" fill="none" stroke="#18a900" stroke-width="3"/><path d="M17 45c7 8 15 17 30 25 13-8 24-17 31-29-16-7-37-8-61 4z" fill="#3574bd"/><circle cx="70" cy="69" r="13" fill="none" stroke="#184f92" stroke-width="6"/><path d="M79 78l13 13" stroke="#184f92" stroke-width="7" stroke-linecap="round"/></svg></div><div>Нейросети для бухгалтера</div></div></header>
+  <main class="main"><div class="kicker">Практика 1</div><h2>Письмо-напоминание об оплате</h2><div class="demo"><section class="case"><h3>Учебная ситуация</h3><div class="money">184 500 ₽</div><p>Счёт № 418. Оплата должна была поступить до 12 февраля 2026 года. На 20 февраля платежа нет.</p><p><b>Результат:</b> тема письма, основной текст и отдельный список точек проверки.</p></section><section class="doc"><div class="subject"></div><div class="docline"></div><div class="docline accent"></div><div class="docline"></div><div class="docline s"></div><div class="docline"></div><div class="checks"><span class="check">Сумма</span><span class="check">Дата</span><span class="check">Номер счёта</span><span class="check">Тон письма</span></div></section></div></main>
+  <footer class="footer"><span>06 / 10</span><div class="line"></div><span>Запрос → черновик → профессиональная проверка</span></footer>
+</section>
+
+<section class="slide" data-title="Практика 2. Чек-лист">
+  <div class="bg-lines"></div><div class="green-bars"><i></i><i></i><i></i></div>
+  <header class="top"><div class="brand"><div class="logo"><svg viewBox="0 0 100 100"><circle cx="49" cy="47" r="34" fill="#fff" stroke="#18a900" stroke-width="5"/><path d="M18 46h62M23 32h52M24 60h49M49 13c-17 13-18 56 0 69M49 13c17 13 18 56 0 69" fill="none" stroke="#18a900" stroke-width="3"/><path d="M17 45c7 8 15 17 30 25 13-8 24-17 31-29-16-7-37-8-61 4z" fill="#3574bd"/><circle cx="70" cy="69" r="13" fill="none" stroke="#184f92" stroke-width="6"/><path d="M79 78l13 13" stroke="#184f92" stroke-width="7" stroke-linecap="round"/></svg></div><div>Нейросети для бухгалтера</div></div></header>
+  <main class="main"><div class="kicker">Практика 2</div><h2>Чек-лист проверки комплекта документов</h2><div class="problems"><div class="problem">Нет подписи на копии УПД</div><div class="problem">Не приложена транспортная накладная</div><div class="problem">Акт ввода пока не оформлен</div></div><div class="table"><div class="table-grid"><div class="cell head">Позиция</div><div class="cell head">Статус</div><div class="cell head">Что проверить</div><div class="cell head">Следующее действие</div><div class="cell">УПД</div><div class="cell status">Уточнить</div><div class="cell">Есть ли подпись принимающей стороны</div><div class="cell">Запросить корректную копию</div><div class="cell">Доставка</div><div class="cell status">Проверить</div><div class="cell">Кто оформляет транспортные документы</div><div class="cell">Уточнить у ответственного</div><div class="cell">Акт ввода</div><div class="cell status">Не оформлен</div><div class="cell">Требуется ли для внутреннего процесса</div><div class="cell">Назначить исполнителя</div></div></div></main>
+  <footer class="footer"><span>07 / 10</span><div class="line"></div><span>Нейросеть помогает организовать контроль</span></footer>
+</section>
+
+<section class="slide" data-title="Практика 3. Аналитика">
+  <div class="bg-lines"></div><div class="green-bars"><i></i><i></i><i></i></div>
+  <header class="top"><div class="brand"><div class="logo"><svg viewBox="0 0 100 100"><circle cx="49" cy="47" r="34" fill="#fff" stroke="#18a900" stroke-width="5"/><path d="M18 46h62M23 32h52M24 60h49M49 13c-17 13-18 56 0 69M49 13c17 13 18 56 0 69" fill="none" stroke="#18a900" stroke-width="3"/><path d="M17 45c7 8 15 17 30 25 13-8 24-17 31-29-16-7-37-8-61 4z" fill="#3574bd"/><circle cx="70" cy="69" r="13" fill="none" stroke="#184f92" stroke-width="6"/><path d="M79 78l13 13" stroke="#184f92" stroke-width="7" stroke-linecap="round"/></svg></div><div>Нейросети для бухгалтера</div></div></header>
+  <main class="main"><div class="kicker">Практика 3</div><h2>Аналитическая записка по денежному потоку</h2><div class="analytics"><section class="chart"><div class="bar-group"><div class="bar" style="height:13vh"></div>Январь<br>+150 тыс.</div><div class="bar-group"><div class="bar" style="height:16vh"></div>Февраль<br>+175 тыс.</div><div class="bar-group"><div class="bar neg" style="height:31vh"></div>Март<br>отрицательный</div></section><section class="note"><h3>Что должна сделать нейросеть</h3><p>Описать видимую динамику, выделить ключевые изменения, сформулировать вопросы и не выдавать предположения за установленные причины.</p><div class="tags"><span class="tag fact">Факт</span><span class="tag warn">Вопрос</span><span class="tag">Проверить</span><span class="tag">Недостающие данные</span></div></section></div></main>
+  <footer class="footer"><span>08 / 10</span><div class="line"></div><span>Факты не равны предположениям</span></footer>
+</section>
+
+<section class="slide" data-title="Красные флаги ответа">
+  <div class="bg-lines"></div><div class="green-bars"><i></i><i></i><i></i></div>
+  <header class="top"><div class="brand"><div class="logo"><svg viewBox="0 0 100 100"><circle cx="49" cy="47" r="34" fill="#fff" stroke="#18a900" stroke-width="5"/><path d="M18 46h62M23 32h52M24 60h49M49 13c-17 13-18 56 0 69M49 13c17 13 18 56 0 69" fill="none" stroke="#18a900" stroke-width="3"/><path d="M17 45c7 8 15 17 30 25 13-8 24-17 31-29-16-7-37-8-61 4z" fill="#3574bd"/><circle cx="70" cy="69" r="13" fill="none" stroke="#184f92" stroke-width="6"/><path d="M79 78l13 13" stroke="#184f92" stroke-width="7" stroke-linecap="round"/></svg></div><div>Нейросети для бухгалтера</div></div></header>
+  <main class="main"><div class="kicker">Слайд 9</div><h2>Как понять, что ответ нейросети нельзя использовать</h2><div class="flags"><section class="answer"><p>По данным таблицы можно сделать вывод, что причиной отрицательного потока стала <span class="mark">разовая закупка</span>, поэтому компании необходимо <span class="mark">срочно сократить расходы</span>.</p></section><div class="flaglist"><div class="flag">Выдуманные факты</div><div class="flag">Предположение представлено как доказанный факт</div><div class="flag">Непроверенная норма или основание</div><div class="flag">Неверный формат ответа</div><div class="flag">Категоричный вывод без достаточных данных</div></div><div class="question">Могу ли я объяснить каждую цифру и каждый вывод без фразы «так написала нейросеть»?</div></div></main>
+  <footer class="footer"><span>09 / 10</span><div class="line"></div><span>Ответ нейросети всегда остаётся черновиком</span></footer>
+</section>
+
+<section class="slide" data-title="Полный курс">
+  <div class="bg-lines"></div><div class="green-bars"><i></i><i></i><i></i></div>
+  <header class="top"><div class="brand"><div class="logo"><svg viewBox="0 0 100 100"><circle cx="49" cy="47" r="34" fill="#fff" stroke="#18a900" stroke-width="5"/><path d="M18 46h62M23 32h52M24 60h49M49 13c-17 13-18 56 0 69M49 13c17 13 18 56 0 69" fill="none" stroke="#18a900" stroke-width="3"/><path d="M17 45c7 8 15 17 30 25 13-8 24-17 31-29-16-7-37-8-61 4z" fill="#3574bd"/><circle cx="70" cy="69" r="13" fill="none" stroke="#184f92" stroke-width="6"/><path d="M79 78l13 13" stroke="#184f92" stroke-width="7" stroke-linecap="round"/></svg></div><div>Нейросети для бухгалтера</div></div></header>
+  <main class="main"><div class="kicker">Финальный слайд</div><h2>От случайных запросов к рабочей системе</h2><div class="roadmap"><div class="stages"><div class="stage"><span>1. Основы работы с нейросетями</span><b>→</b></div><div class="stage"><span>2. Первичные документы</span><b>→</b></div><div class="stage"><span>3. Контрагенты и договоры</span><b>→</b></div><div class="stage"><span>4. Переписка и документы</span><b>→</b></div><div class="stage"><span>5. Управленческая отчётность</span><b>✓</b></div></div><section class="cta"><div><h3>Понятный и контролируемый рабочий процесс</h3><p>Задача → безопасные данные → точный запрос → черновик → проверка → итоговый документ.</p></div><div class="cta-button">Перейти к курсу</div></section></div></main>
+  <footer class="footer"><span>10 / 10</span><div class="line"></div><span>Спикер: Сергеев Олег Владимирович</span></footer>
+</section>
+
+</div>
+<div class="help">← → листать • F — полный экран • O — обзор</div>
+<div class="photo-tool"><label>📷 Выбрать фото спикера<input id="photoInput" type="file" accept="image/*"></label></div>
+<nav class="nav" aria-label="Навигация"><button id="prev" aria-label="Предыдущий слайд">‹</button><div class="counter" id="counter">1 / 10</div><button id="next" aria-label="Следующий слайд">›</button><button class="fullscreen" id="full" aria-label="Полный экран">⛶</button></nav>
+<div class="progress" id="progress"></div>
+<div class="overview" id="overview"><button class="overview-close" id="overviewClose">Закрыть обзор</button><div class="overview-grid" id="overviewGrid"></div></div>
+<script>
+(()=>{
+  const slides=[...document.querySelectorAll('.slide')];
+  const counter=document.getElementById('counter');
+  const progress=document.getElementById('progress');
+  const overview=document.getElementById('overview');
+  const overviewGrid=document.getElementById('overviewGrid');
+  let index=0,startX=0;
+  const clamp=i=>(i+slides.length)%slides.length;
+  function show(i){index=clamp(i);slides.forEach((s,n)=>s.classList.toggle('active',n===index));counter.textContent=`${index+1} / ${slides.length}`;progress.style.width=`${((index+1)/slides.length)*100}%`;history.replaceState(null,'',`#${index+1}`)}
+  function next(){show(index+1)} function prev(){show(index-1)}
+  document.getElementById('next').addEventListener('click',next);
+  document.getElementById('prev').addEventListener('click',prev);
+  document.getElementById('full').addEventListener('click',()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()});
+  document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}if(e.key==='Home')show(0);if(e.key==='End')show(slides.length-1);if(e.key.toLowerCase()==='f')document.getElementById('full').click();if(e.key.toLowerCase()==='o')overview.classList.toggle('open');if(e.key==='Escape')overview.classList.remove('open')});
+  document.getElementById('deck').addEventListener('touchstart',e=>startX=e.changedTouches[0].screenX,{passive:true});
+  document.getElementById('deck').addEventListener('touchend',e=>{const dx=e.changedTouches[0].screenX-startX;if(Math.abs(dx)>55)(dx<0?next:prev)()},{passive:true});
+  slides.forEach((s,n)=>{const t=document.createElement('div');t.className='thumb';t.innerHTML=`<b>${String(n+1).padStart(2,'0')}</b><span>${s.dataset.title||'Слайд'}</span>`;t.addEventListener('click',()=>{show(n);overview.classList.remove('open')});overviewGrid.appendChild(t)});
+  document.getElementById('overviewClose').addEventListener('click',()=>overview.classList.remove('open'));
+  const photoInput=document.getElementById('photoInput');
+  photoInput.addEventListener('change',()=>{const file=photoInput.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{document.querySelectorAll('.speaker-photo').forEach(img=>img.src=reader.result);try{localStorage.setItem('speakerPhoto',reader.result)}catch(e){}};reader.readAsDataURL(file)});
+  try{const saved=localStorage.getItem('speakerPhoto');if(saved)document.querySelectorAll('.speaker-photo').forEach(img=>img.src=saved)}catch(e){}
+  const hash=parseInt(location.hash.replace('#',''),10);show(Number.isFinite(hash)?hash-1:0);
+})();
+</script>
+</body>
+</html>
